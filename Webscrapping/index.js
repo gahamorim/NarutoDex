@@ -1,25 +1,30 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
- 
+
 (async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto('https://naruto.fandom.com/wiki/Category:Characters');
-  const imgList = await page.evaluate(() => {
-      const nodeList = document.querySelectorAll('article img');
-      const imgArray = [...nodeList]
-      const imgList = imgArray.map(({src}) => ({
-          src
-      }))
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
 
-      return imgList
-  })
+    try {
+        for (var i = 65; i <= 90; i++) {
+            await page.goto(`https://naruto.fandom.com/pt-br/wiki/Categoria:Personagens?from=${String.fromCharCode(i)}`);
+            const characterHtmlList = await page.$('#mw-content-text > div.category-page__members > ul:nth-child(2)');
+            const eachCharacterInHtml = await characterHtmlList.$$('.category-page__member > a')
 
-  console.log(imgList)
- 
-  fs.writeFile('narutoimg.json', JSON.stringify(imgList, null, 2), err => {
-      if (err) throw new Error('Something went wrong')
-      console.log('Well done!')
-  })
-  await browser.close();
-})(); 
+            for (let i = 1; i <= [...eachCharacterInHtml].length; i++) {
+                page.click(`#mw-content-text > div.category-page__members > ul:nth-child(2) > li:nth-child(${i}) > a`)
+                await page.waitForNavigation()
+                await page.goBack()
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
+    // fs.writeFile('narutoExample.json', JSON.stringify(nameList, null, 2), err => {
+    //     if (err) throw new Error('Something went wrong')
+    //     console.log('Well done!')
+    // })
+
+    await browser.close();
+})();

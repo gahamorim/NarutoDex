@@ -40,7 +40,7 @@ const fs = require('fs');
         console.log(error)
     }
 
-    fs.writeFile('narutoExample.json', JSON.stringify(characterData, null, 2), err => {
+    fs.writeFile('allNarutoCharacters.json', JSON.stringify(characterData, null, 2), err => {
         if (err) throw new Error('Something went wrong')
         console.log('Well done!')
     })

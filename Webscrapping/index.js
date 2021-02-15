@@ -47,6 +47,3 @@ const fs = require('fs');
 
     await browser.close();
 })();
-
-// [...document.getElementsByClassName('pi-item pi-data pi-item-spacing pi-border-color')]
-// .map((a) => a.firstElementChild.parentElement.innerText)
